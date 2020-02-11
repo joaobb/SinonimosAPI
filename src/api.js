@@ -1,8 +1,8 @@
 const express = require("express");
 const serverless = require("serverless-http")
 
-// const fetch = require("node-fetch")
-const axios = require("axios")
+const fetch = require('node-fetch').default;
+
 const HTMLParser = require('node-html-parser');
 
 const app = express();
@@ -21,35 +21,30 @@ async function getSynonym(word) {
     if (!word) return;
     console.log("Checked word:", word);
 
-    // let response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.sinonimos.com.br/${word}/`, {
-    //     headers: { "X-Requested-With": "XMLHttpRequest" }
-    // });
+    let response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.sinonimos.com.br/${word}/`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
 
-    let response = await axios.get(`https://cors-anywhere.herokuapp.com/https://www.sinonimos.com.br/${word}/`,
-        {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            }
-        })
+    let html = await response.textConverted();
 
-    let dom = HTMLParser.parse(response.data)
+    let dom = HTMLParser.parse(html);
 
-    let meanings = dom.querySelectorAll('.s-wrapper')
-    let synonyms = {}
+    let meanings = dom.querySelectorAll('.s-wrapper');
+    let synonyms = {};
 
     let meaning;
+    let text;
     for (let i = 0; i < meanings.length; i++) {
-        meaning = meanings[i]
+        meaning = meanings[i];
 
         let len = meaning.childNodes.length;
 
-        synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`] = []
+        synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`] = [];
 
-        let text;
         meaning.childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
             text = s.rawText
             if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText)
-        })
+        });
     }
     return synonyms;
 }

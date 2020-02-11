@@ -10,7 +10,6 @@
   "author": "joaobb",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
     "express": "^4.17.1",
     "netlify-lambda": "^1.6.3",
     "node-fetch": "^2.6.0",
