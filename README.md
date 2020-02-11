@@ -1,6 +1,6 @@
 
 # Welcome to SinonimosAPI 
-<a align="center" target="_blank">
+<a align="center" href="" target="_blank">
  <p>
   <img src="https://i.imgur.com/K3wvK7Z.png" width="350">
  </p>
