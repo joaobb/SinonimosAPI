@@ -5,17 +5,21 @@ const fetch = require('node-fetch').default;
 
 const HTMLParser = require('node-html-parser');
 
+
 const app = express();
 
 const router = express.Router();
 
+app.use("/.netlify/functions/api", router)
+
 router.get("/", (req, res) => {
+    res.header('Access-Control-Allow-Origin', "*");
+
     getSynonym(req.query.q).then(synonyms => {
         res.send(synonyms)
     })
 });
 
-app.use("/.netlify/functions/api", router)
 
 async function getSynonym(word) {
     if (!word) return;
@@ -26,28 +30,24 @@ async function getSynonym(word) {
     });
 
     let html = await response.textConverted();
-
     let dom = HTMLParser.parse(html);
 
     let meanings = dom.querySelectorAll('.s-wrapper');
+
     let synonyms = {};
-
-    let meaning;
     let text;
+
     for (let i = 0; i < meanings.length; i++) {
-        meaning = meanings[i];
+        let len = meanings[i].childNodes.length;
 
-        let len = meaning.childNodes.length;
+        synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`] = [];
 
-        synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`] = [];
-
-        meaning.childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
+        meanings[i].childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
             text = s.rawText
-            if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText)
+            if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText)
         });
     }
     return synonyms;
 }
-
 
 module.exports.handler = serverless(app);

@@ -23898,12 +23898,13 @@ const HTMLParser = __webpack_require__(/*! node-html-parser */ "../node_modules/
 
 const app = express();
 const router = express.Router();
+app.use("/.netlify/functions/api", router);
 router.get("/", (req, res) => {
+  res.header('Access-Control-Allow-Origin', "*");
   getSynonym(req.query.q).then(synonyms => {
     res.send(synonyms);
   });
 });
-app.use("/.netlify/functions/api", router);
 
 async function getSynonym(word) {
   if (!word) return;
@@ -23917,16 +23918,14 @@ async function getSynonym(word) {
   let dom = HTMLParser.parse(html);
   let meanings = dom.querySelectorAll('.s-wrapper');
   let synonyms = {};
-  let meaning;
   let text;
 
   for (let i = 0; i < meanings.length; i++) {
-    meaning = meanings[i];
-    let len = meaning.childNodes.length;
-    synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`] = [];
-    meaning.childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
+    let len = meanings[i].childNodes.length;
+    synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`] = [];
+    meanings[i].childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
       text = s.rawText;
-      if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meaning.childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText);
+      if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText);
     });
   }
 

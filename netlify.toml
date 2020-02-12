@@ -8,3 +8,8 @@
   for = "/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
+
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/api"
+  status = 200
