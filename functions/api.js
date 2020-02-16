@@ -23908,12 +23908,12 @@ router.get("/", (req, res) => {
 
 async function getSynonym(word) {
   if (!word) return;
-  console.log("Checked word:", word);
   let response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.sinonimos.com.br/${word}/`, {
     headers: {
       "X-Requested-With": "XMLHttpRequest"
     }
   });
+  if (!response.ok) return {};
   let html = await response.textConverted();
   let dom = HTMLParser.parse(html);
   let meanings = dom.querySelectorAll('.s-wrapper');
@@ -23923,9 +23923,12 @@ async function getSynonym(word) {
   for (let i = 0; i < meanings.length; i++) {
     let len = meanings[i].childNodes.length;
     synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`] = [];
-    meanings[i].childNodes[len - 1].querySelectorAll(".sinonimo").forEach(s => {
-      text = s.rawText;
-      if (text.match(/[A-Za-z_]/)) synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText);
+    meanings[i].childNodes[len - 1].querySelectorAll("span, a").forEach(s => {
+      text = s.rawText; // Checks if it starts with an lowercased letter
+
+      if (text.charCodeAt(0) >= 97) {
+        synonyms[len == 2 ? meanings[i].childNodes[0].rawText : `Sentido ${i + 1}`].push(s.rawText);
+      }
     });
   }
 

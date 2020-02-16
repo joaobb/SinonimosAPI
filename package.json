@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=development ./node_modules/.bin/netlify-lambda serve src",
     "build": "NODE_ENV=production ./node_modules/.bin/netlify-lambda build src",
-    "dev": "nodemon server.js"
+    "dev": "nodemon ./src/api.js"
   },
   "author": "joaobb",
   "license": "ISC",
