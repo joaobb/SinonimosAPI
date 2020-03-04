@@ -17,8 +17,15 @@ This is an API based on the great student savior's website, [Sinonimos](https://
 ## Usage
 This is a pretty simple API, just choose your word, replace the last tag on the link below with it and the API will return a JSON containing a set of synonyms grouped by similar meanings.
 
-	https://sinonimosapi.netlify.com/.netlify/functions/api/?q=<word>
+Method | Endpoint           | Description
+-------|--------------------|-------------
+GET    | /.netlify/functions/api/?q=**word** | Returns a set of synonyms grouped by similar meanings.
 
+### Exemple
+
+Method | Endpoint           | Description
+-------|--------------------|-------------
+GET    | [/.netlify/functions/api/?q=**pensar**](https://sinonimosapi.netlify.com/.netlify/functions/api/?q=pensar)           | Returns a set of *pensar* synonyms grouped by similar meanings.
 
 ## Advice 
 
