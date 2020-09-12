@@ -14,7 +14,7 @@
     "encoding": "^0.1.12",
     "express": "^4.17.1",
     "netlify-lambda": "^1.6.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-html-parser": "^1.2.4",
     "serverless-http": "^2.3.1"
   },
